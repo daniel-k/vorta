@@ -14,7 +14,7 @@ from .models import BackupProfileModel, SettingsModel
 from .qt_single_application import QtSingleApplication
 from .scheduler import VortaScheduler
 from .tray_menu import TrayMenu
-from .utils import borg_compat, parse_args, set_tray_icon
+from .utils import borg_compat, set_tray_icon, should_daemonize
 from .views.main_window import MainWindow
 
 APP_ID = os.path.join(STATE_DIR, "socket")
@@ -53,10 +53,8 @@ class VortaApp(QtSingleApplication):
         if SettingsModel.get(key='use_dark_theme').value:
             self.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
 
-        args = parse_args()
-        if not (hasattr(args, 'daemonize') and args.daemonize):
-            if (hasattr(args, 'foreground') and args.foreground) or SettingsModel.get(key='foreground').value:
-                self.open_main_window_action()
+        if not should_daemonize():
+            self.open_main_window_action()
 
         self.backup_started_event.connect(self.backup_started_event_response)
         self.backup_finished_event.connect(self.backup_finished_event_response)

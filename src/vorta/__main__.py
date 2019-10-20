@@ -8,7 +8,7 @@ from vorta.config import SETTINGS_DIR
 from vorta.log import init_logger
 from vorta.models import init_db
 from vorta.updater import get_updater
-from vorta.utils import parse_args
+from vorta.utils import parse_args, should_daemonize, is_flatpak
 
 
 def main():
@@ -25,7 +25,7 @@ def main():
 
     # We assume that a frozen binary is a fat single-file binary made with
     # PyInstaller. These are not compatible with forking into background here:
-    if not (want_foreground or frozen_binary):
+    if not (frozen_binary or is_flatpak()) and should_daemonize():
         if os.fork():
             sys.exit()
 

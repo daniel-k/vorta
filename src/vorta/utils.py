@@ -13,6 +13,7 @@ import xml
 from collections import defaultdict
 from datetime import datetime as dt
 from functools import reduce
+from pathlib import Path
 
 import psutil
 from paramiko import SSHException
@@ -279,3 +280,18 @@ def is_system_tray_available():
         is_available = tray.isSystemTrayAvailable()
 
     return is_available
+
+
+def should_daemonize():
+    from vorta.models import SettingsModel
+    args = parse_args()
+    if getattr(args, 'daemonize', False):
+        return True
+    elif getattr(args, 'foreground', False) or SettingsModel.get(key='foreground').value:
+        return False
+    else:
+        return True
+
+
+def is_flatpak():
+    return Path('/.flatpak-info').exists()

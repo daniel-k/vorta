@@ -1,5 +1,6 @@
 import sys
 from pathlib import Path
+from vorta.utils import is_flatpak
 
 LINUX_STARTUP_FILE = """\
 [Desktop Entry]
@@ -50,8 +51,7 @@ def open_app_at_startup(enabled=True):
         autostart_file_path = autostart_path / 'vorta.desktop'
 
         if enabled:
-            if Path('/.flatpak-info').exists():
-                # Vorta runs as flatpak
+            if is_flatpak():
                 autostart_file_path.write_text(LINUX_STARTUP_FILE.format('flatpak run com.borgbase.Vorta'))
             else:
                 autostart_file_path.write_text(LINUX_STARTUP_FILE.format('vorta'))
