@@ -1,9 +1,9 @@
 import os
 from PyQt5.QtWidgets import QMenu, QSystemTrayIcon
 
-from .borg.borg_thread import BorgThread
-from .models import BackupProfileModel
-from .utils import set_tray_icon
+from vorta.borg.borg_thread import BorgThread
+from vorta.models import BackupProfileModel
+from vorta.utils import set_tray_icon
 
 
 class TrayMenu(QSystemTrayIcon):
