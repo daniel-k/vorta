@@ -23,17 +23,19 @@ def main():
         print(f"Vorta {__version__}")
         sys.exit()
 
+    init_logger(foreground=want_foreground)
+
+    # Init database
+    sqlite_db = peewee.SqliteDatabase(os.path.join(SETTINGS_DIR, 'settings.db'))
+    init_db(sqlite_db)
+
     # We assume that a frozen binary is a fat single-file binary made with
     # PyInstaller. These are not compatible with forking into background here:
     if not (frozen_binary or is_flatpak()) and should_daemonize():
         if os.fork():
             sys.exit()
 
-    init_logger(foreground=want_foreground)
 
-    # Init database
-    sqlite_db = peewee.SqliteDatabase(os.path.join(SETTINGS_DIR, 'settings.db'))
-    init_db(sqlite_db)
 
     # Init app after database is available
     from vorta.application import VortaApp
